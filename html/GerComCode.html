@@ -1,0 +1,282 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>GerComCode</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-12-12"><meta name="DC.source" content="GerComCode.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">zigzag&#25490;&#24207;&#34920;&#12289;&#37327;&#21270;&#34920;</a></li><li><a href="#4">8x8 DCT</a></li><li><a href="#5">&#37327;&#21270;</a></li><li><a href="#6">&#20998;&#22359;&#22788;&#29702;</a></li><li><a href="#7">&#32534;&#30721;&#37096;&#20998;</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [Q,code_length]=GerComCode(I,hint)
+</pre><pre class="codeinput"><span class="comment">%&#29983;&#25104;&#21387;&#32553;&#32534;&#30721;&#24182;&#23384;&#20648;&#22312;&#23545;&#24212;&#30340;&#25991;&#26412;&#25991;&#26723;&#20013;&#65292;&#20197;&#20379;&#26597;&#30475;</span>
+<span class="comment">% &#35843;&#29992;&#29983;&#25104;&#20142;&#24230;&#25110;&#33394;&#24046;&#21387;&#32553;&#32534;&#30721;&#24182;&#23384;&#20648;</span>
+<span class="comment">% I&#20026;&#36755;&#20837;&#30340;&#20142;&#24230;&#25110;&#33394;&#24046;&#25968;&#32452;&#65292;&#20197;hint&#20540;&#20570;&#21028;&#26029;</span>
+<span class="comment">% &#24403;hint=1&#26102;&#65292;&#34920;&#31034;&#36755;&#20837;&#30340;&#26159;&#20142;&#24230;Y&#25968;&#32452;</span>
+<span class="comment">% &#24403;hint=2&#26102;&#65292;&#34920;&#31034;&#36755;&#20837;&#30340;&#26159;&#33394;&#24046;Cb&#25968;&#32452;</span>
+<span class="comment">% &#24403;hint=3&#26102;&#65292;&#34920;&#31034;&#36755;&#20837;&#30340;&#26159;&#33394;&#24046;Cr&#25968;&#32452;</span>
+
+<span class="keyword">if</span> hint==1
+    fid=fopen(<span class="string">'D:\MATLAB\Compression_byHB\Code_Y.txt'</span>,<span class="string">'a'</span>);
+<span class="keyword">elseif</span> hint==2
+    fid=fopen(<span class="string">'D:\MATLAB\Compression_byHB\Code_Cb.txt'</span>,<span class="string">'a'</span>);
+<span class="keyword">else</span>
+    fid=fopen(<span class="string">'D:\MATLAB\Compression_byHB\Code_Cr.txt'</span>,<span class="string">'a'</span>);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">&#36755;&#20837;&#21442;&#25968;&#30340;&#25968;&#30446;&#19981;&#36275;&#12290;
+
+&#20986;&#38169; GerComCode (line 9)
+if hint==1
+</pre><h2 id="3">zigzag&#25490;&#24207;&#34920;&#12289;&#37327;&#21270;&#34920;</h2><pre class="codeinput">load(<span class="string">'Table.mat'</span>,<span class="string">'zigzag'</span>);
+load(<span class="string">'Table.mat'</span>,<span class="string">'Ytable'</span>);<span class="comment">%&#26631;&#20934;&#20142;&#24230;&#37327;&#21270;&#34920;</span>
+load(<span class="string">'Table.mat'</span>,<span class="string">'Ctable'</span>);<span class="comment">%&#26631;&#20934;&#33394;&#24046;&#37327;&#21270;&#34920;</span>
+</pre><h2 id="4">8x8 DCT</h2><pre class="codeinput">DCT=blkproc(I,[8  8],<span class="string">'dct2'</span>);
+</pre><h2 id="5">&#37327;&#21270;</h2><pre class="codeinput"><span class="keyword">if</span> hint==1
+    Q=round(blkproc(DCT,[8 8],<span class="string">'x./P1'</span>,Ytable));
+<span class="keyword">elseif</span> hint==2
+    Q=round(blkproc(DCT,[8 8],<span class="string">'x./P1'</span>,Ctable));
+<span class="keyword">else</span>
+    Q=round(blkproc(DCT,[8 8],<span class="string">'x./P1'</span>,Ctable));
+<span class="keyword">end</span>
+</pre><h2 id="6">&#20998;&#22359;&#22788;&#29702;</h2><pre class="codeinput">[H,L]=size(I);<span class="comment">%&#33719;&#21462;&#22270;&#20687;&#39640;&#21644;&#38271;</span>
+<span class="comment">%&#23558;&#22270;&#20687;&#20998;&#25104;8*8&#30340;&#22359;</span>
+num=0;
+<span class="keyword">for</span> h=1:H/8
+    <span class="keyword">for</span> l=1:L/8
+        num=num+1;
+        block88(:,:,num)=Q(((h-1)*8+1):((h-1)*8+8),<span class="keyword">...</span>
+        ((l-1)*8+1):((l-1)*8+8));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><h2 id="7">&#32534;&#30721;&#37096;&#20998;</h2><pre class="codeinput">code_length=0;
+<span class="keyword">for</span> i=1:num
+    blockbit_seq=[];AC_seq=[];
+    m=block88(:,:,i);
+    m=m';m=m(:);m=m';<span class="comment">%&#23558;8*8&#22359;&#36716;&#25442;&#25104;&#19968;&#32500;&#25968;&#32452;</span>
+    <span class="keyword">for</span> j=1:64
+        z(j)=m(zigzag(j));<span class="comment">%&#23558;8*8&#22359;&#36827;&#34892;zigzag&#25490;&#24207;</span>
+    <span class="keyword">end</span>
+    <span class="comment">%&#25214;&#20986;&#26368;&#21518;&#19968;&#20301;&#19981;&#20026;0&#30340;zigzag&#30697;&#38453;&#30340;&#19979;&#26631;</span>
+    index=0;
+    sum=64;
+    <span class="keyword">while</span> sum ~= 0
+         <span class="keyword">if</span> z(sum) ~= 0
+            index=sum;
+            <span class="keyword">break</span>;
+         <span class="keyword">else</span>
+             sum=sum-1;
+         <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="comment">%index&#20026;&#26368;&#21518;&#19968;&#20010;&#19981;&#20026;0&#30340;&#31995;&#25968;&#30340;&#19979;&#26631;&#65292;e&#20026;zigzag&#25195;&#25551;&#32467;&#26524;t&#21435;&#25481;&#26411;&#23614;&#30340;0&#21518;&#24471;&#21040;&#30340;&#19968;&#32500;&#34892;&#21521;&#37327;</span>
+    <span class="keyword">if</span> index==0
+        index=1;
+    <span class="keyword">end</span>
+    <span class="keyword">for</span> k=1:index
+           e(k)=z(k);
+    <span class="keyword">end</span>
+    <span class="comment">%&#23545;DC&#31995;&#25968;&#36827;&#34892;Huffman&#32534;&#30721;</span>
+    DC_seq=DCEncoding(e(1));
+    eob=dec2bin(10,4);<span class="comment">%EOB&#32534;&#30721;&#20540;</span>
+    eob=str2num0(eob);
+    zerolen=0;zeronum=0;
+    <span class="keyword">if</span> numel(e)==1
+        blockbit_seq=[DC_seq,eob];
+    <span class="keyword">else</span>
+        <span class="keyword">for</span> g=2:index
+            <span class="keyword">if</span> e(g)==0 &amp;&amp; zeronum&lt;16
+                zeronum=zeronum+1;
+            <span class="keyword">elseif</span> e(g)==0 &amp;&amp; zeronum==16
+                bit_seq=dec2bin(2041,11);
+                zeronum=1;
+                AC_seq=[AC_seq,bit_seq];
+            <span class="keyword">elseif</span> e(g)~=0 &amp;&amp; zeronum==16
+                zrl_seq=dec2bin(2041,11);
+                amp=e(g);
+                trt_seq=ACEncoding(0,amp);
+                bit_seq=[zrl_seq,trt_seq];
+                AC_seq=[AC_seq,bit_seq];
+            <span class="keyword">elseif</span> e(g)~=0 &amp;&amp; zeronum&lt;16
+                zerolen=zeronum;
+                amp=e(g);
+                zeronum=0;
+                bit_seq=ACEncoding(zerolen,amp);
+                AC_seq=[AC_seq,bit_seq];
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        blockbit_seq=[DC_seq,AC_seq,eob];
+    <span class="keyword">end</span>
+    Image_seq=num2str0(blockbit_seq);
+    code_length=code_length+length(Image_seq);
+    fprintf(fid,<span class="string">'%s'</span>,Image_seq);
+<span class="keyword">end</span>
+fclose(fid);
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [Q,code_length]=GerComCode(I,hint)
+%生成压缩编码并存储在对应的文本文档中，以供查看
+% 调用生成亮度或色差压缩编码并存储
+% I为输入的亮度或色差数组，以hint值做判断
+% 当hint=1时，表示输入的是亮度Y数组
+% 当hint=2时，表示输入的是色差Cb数组
+% 当hint=3时，表示输入的是色差Cr数组
+
+if hint==1
+    fid=fopen('D:\MATLAB\Compression_byHB\Code_Y.txt','a');
+elseif hint==2
+    fid=fopen('D:\MATLAB\Compression_byHB\Code_Cb.txt','a');
+else
+    fid=fopen('D:\MATLAB\Compression_byHB\Code_Cr.txt','a');
+end
+
+%% zigzag排序表、量化表
+load('Table.mat','zigzag');
+load('Table.mat','Ytable');%标准亮度量化表
+load('Table.mat','Ctable');%标准色差量化表
+
+%% 8x8 DCT
+DCT=blkproc(I,[8  8],'dct2');
+    
+%% 量化
+if hint==1
+    Q=round(blkproc(DCT,[8 8],'x./P1',Ytable));
+elseif hint==2
+    Q=round(blkproc(DCT,[8 8],'x./P1',Ctable));
+else
+    Q=round(blkproc(DCT,[8 8],'x./P1',Ctable));
+end
+
+%% 分块处理
+[H,L]=size(I);%获取图像高和长
+%将图像分成8*8的块
+num=0;
+for h=1:H/8
+    for l=1:L/8
+        num=num+1;
+        block88(:,:,num)=Q(((h-1)*8+1):((h-1)*8+8),...
+        ((l-1)*8+1):((l-1)*8+8)); 
+    end
+end
+
+%% 编码部分
+code_length=0;
+for i=1:num
+    blockbit_seq=[];AC_seq=[];
+    m=block88(:,:,i);
+    m=m';m=m(:);m=m';%将8*8块转换成一维数组
+    for j=1:64
+        z(j)=m(zigzag(j));%将8*8块进行zigzag排序
+    end       
+    %找出最后一位不为0的zigzag矩阵的下标
+    index=0;
+    sum=64;
+    while sum ~= 0
+         if z(sum) ~= 0
+            index=sum;
+            break;
+         else
+             sum=sum-1;
+         end
+    end
+    %index为最后一个不为0的系数的下标，e为zigzag扫描结果t去掉末尾的0后得到的一维行向量
+    if index==0
+        index=1;
+    end
+    for k=1:index
+           e(k)=z(k);
+    end
+    %对DC系数进行Huffman编码
+    DC_seq=DCEncoding(e(1));
+    eob=dec2bin(10,4);%EOB编码值
+    eob=str2num0(eob);
+    zerolen=0;zeronum=0;
+    if numel(e)==1
+        blockbit_seq=[DC_seq,eob];
+    else
+        for g=2:index
+            if e(g)==0 && zeronum<16
+                zeronum=zeronum+1;
+            elseif e(g)==0 && zeronum==16
+                bit_seq=dec2bin(2041,11);
+                zeronum=1;
+                AC_seq=[AC_seq,bit_seq];
+            elseif e(g)~=0 && zeronum==16
+                zrl_seq=dec2bin(2041,11);
+                amp=e(g);
+                trt_seq=ACEncoding(0,amp);
+                bit_seq=[zrl_seq,trt_seq];
+                AC_seq=[AC_seq,bit_seq];
+            elseif e(g)~=0 && zeronum<16
+                zerolen=zeronum;
+                amp=e(g);
+                zeronum=0;
+                bit_seq=ACEncoding(zerolen,amp);
+                AC_seq=[AC_seq,bit_seq];
+            end
+        end
+        blockbit_seq=[DC_seq,AC_seq,eob];
+    end
+    Image_seq=num2str0(blockbit_seq);
+    code_length=code_length+length(Image_seq);
+    fprintf(fid,'%s',Image_seq);
+end
+fclose(fid);
+##### SOURCE END #####
+--></body></html>
